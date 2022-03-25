@@ -77,11 +77,11 @@ func (s *SwitchSession) generateCommandResult(item *ExecutedCommand) *model.Comm
 		user      string
 	)
 	user = item.User.User
-	//if len(item.Command) > 128 {
-	//	input = item.Command[:128]
-	//} else {
-	//	input = item.Command
-	//}
+	if len(item.Command) > 512 {
+		input = item.Command[:512]
+	} else {
+		input = item.Command
+	}
 	input = item.Command
 	//i := strings.LastIndexByte(item.Output, '\r')
 	//if i <= 0 {
