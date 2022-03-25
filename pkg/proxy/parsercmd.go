@@ -5,7 +5,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/LeeEirc/terminalparser"
+	"github.com/Halo1236/terminalparser"
 
 	"github.com/jumpserver/koko/pkg/logger"
 )
@@ -28,9 +28,9 @@ type CmdParser struct {
 func (cp *CmdParser) WriteData(p []byte) (int, error) {
 	cp.lock.Lock()
 	defer cp.lock.Unlock()
-	if cp.buf.Len() >= 1024 {
-		return 0, nil
-	}
+	//if cp.buf.Len() >= 1024 {
+	//	return 0, nil
+	//}
 	return cp.buf.Write(p)
 }
 

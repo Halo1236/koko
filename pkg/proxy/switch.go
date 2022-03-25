@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
 	"sync/atomic"
 	"time"
 
@@ -78,19 +77,21 @@ func (s *SwitchSession) generateCommandResult(item *ExecutedCommand) *model.Comm
 		user      string
 	)
 	user = item.User.User
-	if len(item.Command) > 128 {
-		input = item.Command[:128]
-	} else {
-		input = item.Command
-	}
-	i := strings.LastIndexByte(item.Output, '\r')
-	if i <= 0 {
-		output = item.Output
-	} else if i > 0 && i < 1024 {
-		output = item.Output[:i]
-	} else {
-		output = item.Output[:1024]
-	}
+	//if len(item.Command) > 128 {
+	//	input = item.Command[:128]
+	//} else {
+	//	input = item.Command
+	//}
+	input = item.Command
+	//i := strings.LastIndexByte(item.Output, '\r')
+	//if i <= 0 {
+	//	output = item.Output
+	//} else if i > 0 && i < 1024 {
+	//	output = item.Output[:i]
+	//} else {
+	//	output = item.Output[:1024]
+	//}
+	output = item.Output
 
 	switch item.RiskLevel {
 	case model.HighRiskFlag:

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/LeeEirc/terminalparser"
+	"github.com/Halo1236/terminalparser"
 )
 
 func TestCmdParser_Parse(t *testing.T) {

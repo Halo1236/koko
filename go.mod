@@ -4,9 +4,9 @@ go 1.17
 
 require (
 	github.com/Azure/azure-storage-blob-go v0.6.0
+	github.com/Halo1236/terminalparser v0.0.0-20220325030217-4305393966ec
 	github.com/LeeEirc/elfinder v0.0.14
 	github.com/LeeEirc/tclientlib v0.0.1
-	github.com/LeeEirc/terminalparser v0.0.0-20210105090630-135adbff588a
 	github.com/aliyun/aliyun-oss-go-sdk v1.9.8
 	github.com/aws/aws-sdk-go v1.19.46
 	github.com/creack/pty v1.1.11

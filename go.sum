@@ -52,6 +52,8 @@ github.com/Azure/go-autorest/tracing v0.6.0/go.mod h1:+vhtPC754Xsa23ID7GlGsrdKBp
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
+github.com/Halo1236/terminalparser v0.0.0-20220325030217-4305393966ec h1:Hc0jbvGslSxzsZERkbdzaEvJJJY4oOoQTafjhcLWZdo=
+github.com/Halo1236/terminalparser v0.0.0-20220325030217-4305393966ec/go.mod h1:Nkx1DxlPdjAEYGgm7yD7UEI7FAhdn7te6O9tNm3R5GY=
 github.com/LeeEirc/crypto v0.0.0-20211112090926-652515632c44 h1:CeJC9n4p/1VGErWfhFJX0mxsTw18csH/E0HR6YQpGD4=
 github.com/LeeEirc/crypto v0.0.0-20211112090926-652515632c44/go.mod h1:P+XmwS30IXTQdn5tA2iutPOUgjI07+tq3H3K9MVA1s8=
 github.com/LeeEirc/elfinder v0.0.14 h1:6ObxwIoC5zmrnKArUU5Mz++/T3lzgl1Ja0pS1Smd3j4=
@@ -60,8 +62,6 @@ github.com/LeeEirc/ssh v0.1.2-0.20211112094038-5ebcf34caaf1 h1:tGfdGCB8Nn+MSFf+R
 github.com/LeeEirc/ssh v0.1.2-0.20211112094038-5ebcf34caaf1/go.mod h1:VM1GEvGcIkK4OFV6b4vtImJ298DLh5z0F8/eXyLdK0A=
 github.com/LeeEirc/tclientlib v0.0.1 h1:UXBYJyBUjgsgkVlX+7Qq/TQ05Yn41+fnQ8pIQAQMBzU=
 github.com/LeeEirc/tclientlib v0.0.1/go.mod h1:TF2v0XZYyRcZfx4NmA/EEFRkdKZLsQd8YnlhGKl1KUA=
-github.com/LeeEirc/terminalparser v0.0.0-20210105090630-135adbff588a h1:bCk3bTkRdgN3Kdx0eco+cNZchIS7gIqMge2qbdMIAKU=
-github.com/LeeEirc/terminalparser v0.0.0-20210105090630-135adbff588a/go.mod h1:tiLv6VBLH4Z3KdBSe2qIKRwQDGCVQ9/F5fOKpQGvyoA=
 github.com/NYTimes/gziphandler v0.0.0-20170623195520-56545f4a5d46/go.mod h1:3wb06e3pkSAbeQ52E9H9iFoQsEEwGN64994WTCIhntQ=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/PuerkitoBio/purell v1.1.1/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbtSwDGJws/X0=
