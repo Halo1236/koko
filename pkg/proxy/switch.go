@@ -82,7 +82,7 @@ func (s *SwitchSession) generateCommandResult(item *ExecutedCommand) *model.Comm
 	} else {
 		input = item.Command
 	}
-	input = item.Command
+	//input = item.Command
 	//i := strings.LastIndexByte(item.Output, '\r')
 	//if i <= 0 {
 	//	output = item.Output
