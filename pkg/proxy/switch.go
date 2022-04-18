@@ -82,7 +82,7 @@ func (s *SwitchSession) generateCommandResult(item *ExecutedCommand) *model.Comm
 	} else {
 		input = item.Command
 	}
-	//input = item.Command
+
 	//i := strings.LastIndexByte(item.Output, '\r')
 	//if i <= 0 {
 	//	output = item.Output
@@ -91,7 +91,11 @@ func (s *SwitchSession) generateCommandResult(item *ExecutedCommand) *model.Comm
 	//} else {
 	//	output = item.Output[:1024]
 	//}
-	output = item.Output
+	if len(item.Output) > 51200 {
+		output = item.Output[:51200]
+	} else {
+		output = item.Output
+	}
 
 	switch item.RiskLevel {
 	case model.HighRiskFlag:
