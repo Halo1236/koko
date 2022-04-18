@@ -473,7 +473,7 @@ func (s *Server) GetCommandRecorder() *CommandRecorder {
 }
 
 func (s *Server) GenerateCommandItem(user, input, output string,
-	riskLevel int64, createdDate time.Time,) *model.Command {
+	riskLevel int64, createdDate time.Time) *model.Command {
 	switch s.connOpts.ProtocolType {
 	case srvconn.ProtocolTELNET, srvconn.ProtocolSSH:
 		return &model.Command{
@@ -744,8 +744,8 @@ func (s *Server) getSSHConn() (srvConn *srvconn.SSHConnection, err error) {
 			}
 		}
 	}
-	var passwordTryCount int
 	password := s.systemUserAuthInfo.Password
+	privateKey := s.systemUserAuthInfo.PrivateKey
 	kb := srvconn.SSHClientKeyboardAuth(func(user, instruction string, questions []string, echos []bool) (answers []string, err error) {
 		s.setKeyBoardMode()
 		termReader := utils.NewTerminal(s.UserConn, "")
@@ -756,8 +756,7 @@ func (s *Server) getSSHConn() (srvConn *srvconn.SSHConnection, err error) {
 			termReader.SetPrompt(questions[i])
 			logger.Debugf("Conn[%s] keyboard auth question [ %s ]", s.UserConn.ID(), q)
 			if strings.Contains(strings.ToLower(q), "password") {
-				passwordTryCount++
-				if passwordTryCount <= 1 && password != "" {
+				if privateKey != "" || password != "" {
 					ans[i] = password
 					continue
 				}
