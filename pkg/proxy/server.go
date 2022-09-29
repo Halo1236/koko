@@ -866,6 +866,10 @@ func (s *Server) getSSHConn() (srvConn *srvconn.SSHConnection, err error) {
 		logger.Infof("Conn[%s]: su login from %s to %s", s.UserConn.ID(),
 			loginSystemUser, s.systemUserAuthInfo)
 	}
+	if isPlatform(s.platform, "aix") {
+		logger.Info("AIX asset connected")
+		_, _ = sshConn.Write([]byte("stty erase ^?\r"))
+	}
 
 	go func() {
 		_ = sess.Wait()
