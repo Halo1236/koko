@@ -200,6 +200,8 @@ func (s *SwitchSession) Bridge(userConn UserConnection, srvConn srvconn.ServerCo
 			buf := make([]byte, 1024)
 			nr, err := userConn.Read(buf)
 			if nr > 0 {
+				logger.Error("Bridge")
+				logger.Error(buf[:nr])
 				index := bytes.IndexFunc(buf[:nr], func(r rune) bool {
 					return r == '\r' || r == '\n'
 				})
@@ -208,13 +210,30 @@ func (s *SwitchSession) Bridge(userConn UserConnection, srvConn srvconn.ServerCo
 						Event: exchange.DataEvent, Body: buf[:nr],
 						Meta: meta})
 				} else {
-					room.Receive(&exchange.RoomMessage{
-						Event: exchange.DataEvent, Body: buf[:index],
-						Meta: meta})
-					time.Sleep(time.Millisecond * 100)
-					room.Receive(&exchange.RoomMessage{
-						Event: exchange.DataEvent, Body: buf[index:nr],
-						Meta: meta})
+					sepBuf := buf[:nr]
+					for {
+						i := bytes.IndexFunc(sepBuf, func(r rune) bool {
+							return r == '\r' || r == '\n'
+						})
+						if i == -1 {
+							room.Receive(&exchange.RoomMessage{
+								Event: exchange.DataEvent, Body: sepBuf,
+								Meta: meta})
+							break
+						} else if i == 0 {
+							room.Receive(&exchange.RoomMessage{
+								Event: exchange.DataEvent, Body: []byte{sepBuf[0]},
+								Meta: meta})
+							time.Sleep(time.Millisecond * 100)
+							sepBuf = sepBuf[1:]
+						} else {
+							room.Receive(&exchange.RoomMessage{
+								Event: exchange.DataEvent, Body: sepBuf[:i],
+								Meta: meta})
+							time.Sleep(time.Millisecond * 1000)
+							sepBuf = sepBuf[i:]
+						}
+					}
 				}
 			}
 			if err != nil {
