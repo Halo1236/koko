@@ -200,8 +200,6 @@ func (s *SwitchSession) Bridge(userConn UserConnection, srvConn srvconn.ServerCo
 			buf := make([]byte, 1024)
 			nr, err := userConn.Read(buf)
 			if nr > 0 {
-				logger.Error("Bridge")
-				logger.Error(buf[:nr])
 				index := bytes.IndexFunc(buf[:nr], func(r rune) bool {
 					return r == '\r' || r == '\n'
 				})
