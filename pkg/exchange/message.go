@@ -44,8 +44,8 @@ const (
 	ShareLeave = "Share_LEAVE"
 	ShareUsers = "Share_USERS"
 
-	ActionEvent = "Action"
-
+	ActionEvent     = "Action"
+	JKEvent         = "JK"
 	ShareRemoveUser = "Share_REMOVE_USER"
 )
 

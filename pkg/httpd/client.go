@@ -109,6 +109,9 @@ func (c *Client) HandleRoomEvent(event string, roomMsg *exchange.RoomMessage) {
 	case exchange.ActionEvent:
 		msgType = TerminalAction
 		msgData = string(roomMsg.Body)
+	case exchange.JKEvent:
+		msgType = JinKu
+		msgData = string(roomMsg.Body)
 	case exchange.ShareRemoveUser:
 		msgType = TerminalShareUserRemove
 		meta := roomMsg.Meta

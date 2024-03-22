@@ -34,4 +34,5 @@ type TicketInfo struct {
 	CloseReq        ReqInfo  `json:"close_ticket_api"`
 	TicketDetailUrl string   `json:"ticket_detail_page_url"`
 	Reviewers       []string `json:"assignees"`
+	JkUrl           string   `json:"jk_url"`
 }

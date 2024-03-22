@@ -248,6 +248,21 @@ func (s *SwitchSession) Bridge(userConn UserConnection, srvConn srvconn.ServerCo
 			room.Broadcast(&msg)
 		}
 	}
+
+	// 构造金库ws 消息发送到前端，包含金库页面的url
+	parser.jKEventCallback = func(event string, url string) {
+		msg := exchange.RoomMessage{Event: exchange.JKEvent}
+		switch event {
+		case "open":
+			msg.Body = []byte(event + "$" + url)
+		case "close":
+			msg.Body = []byte(event)
+		default:
+			msg.Body = []byte(event)
+		}
+		room.Broadcast(&msg)
+	}
+
 	go func() {
 		for {
 			buf := make([]byte, 1024)

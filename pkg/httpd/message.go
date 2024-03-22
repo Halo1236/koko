@@ -29,6 +29,7 @@ const (
 	TerminalBinary  = "TERMINAL_BINARY"
 	TerminalAction  = "TERMINAL_ACTION"
 	TerminalSession = "TERMINAL_SESSION"
+	JinKu           = "JIN_KU"
 
 	TerminalSessionPause  = "TERMINAL_SESSION_PAUSE"
 	TerminalSessionResume = "TERMINAL_SESSION_RESUME"

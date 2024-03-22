@@ -2,12 +2,12 @@
   <div>
     <div id="term"></div>
     <el-dialog
-        :title="this.$t('Terminal.UploadTitle')"
-        :visible.sync="zmodeDialogVisible"
-        :close-on-press-escape="false"
-        :close-on-click-modal="false"
-        :show-close="false"
-        center>
+      :title="this.$t('Terminal.UploadTitle')"
+      :visible.sync="zmodeDialogVisible"
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
+      :show-close="false"
+      center>
       <el-row type="flex" justify="center">
         <el-upload drag action="#" :auto-upload="false" :multiple="false" ref="upload"
                    :on-change="handleFileChange">
@@ -18,6 +18,20 @@
       <div slot="footer">
         <el-button @click="closeZmodemDialog">{{ this.$t('Terminal.Cancel') }}</el-button>
         <el-button type="primary" @click="uploadSubmit">{{ this.$t('Terminal.Upload') }}</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog
+      title="金库复核页面"
+      width="90%"
+      :visible.sync="jKDialogVisible"
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
+      :show-close="false">
+      <el-row type="flex" justify="center">
+        <iframe ref="jKiframe" width="100%" height="600px" :src="jKUrl"></iframe>
+      </el-row>
+      <div slot="footer">
+        <el-button type="primary" @click="closeJKDialog">关闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -71,6 +85,8 @@ export default {
       zmodeDialogVisible: false,
       zmodeSession: null,
       fileList: [],
+      jKDialogVisible: false,
+      jKUrl: null,
       code: this.shareCode,
       enableRzSz: this.enableZmodem,
       zmodemStatus: false,
@@ -90,7 +106,7 @@ export default {
     updateTheme(themeName) {
       const theme = xtermTheme[themeName] || defaultTheme
       this.term.setOption("theme", theme)
-      this.$log.debug("theme: ",themeName)
+      this.$log.debug("theme: ", themeName)
       this.$emit("background-color", theme.background)
     },
     createTerminal() {
@@ -201,9 +217,12 @@ export default {
     connectWs() {
       if (this.wsIsActivated()) {
         this.term.writeln("try to reconnect to server");
-        this.ws.onerror = ()=>{};
-        this.ws.onclose = ()=>{};
-        this.ws.onmessage = ()=>{};
+        this.ws.onerror = () => {
+        };
+        this.ws.onclose = () => {
+        };
+        this.ws.onmessage = () => {
+        };
         this.ws.close();
       }
       const ws = new WebSocket(this.wsURL, ["JMS-KOKO"]);
@@ -313,7 +332,7 @@ export default {
       this.lastReceiveTime = new Date();
       this.pingInterval = setInterval(() => {
         if (this.ws.readyState === WebSocket.CLOSING ||
-            this.ws.readyState === WebSocket.CLOSED) {
+          this.ws.readyState === WebSocket.CLOSED) {
           clearInterval(this.pingInterval)
           return
         }
@@ -376,7 +395,7 @@ export default {
           this.$log.debug(this.currentUser);
           this.updateIcon();
           this.ws.send(this.message(this.terminalId, 'TERMINAL_INIT',
-              JSON.stringify(data)));
+            JSON.stringify(data)));
           break
         }
         case "CLOSE":
@@ -440,6 +459,18 @@ export default {
           }
           break
         }
+        case 'JIN_KU': {
+          const eventData = msg.data.split("$")
+          console.log(eventData)
+          if (eventData[0] === "open") {
+            this.jKDialogVisible = true;
+            this.jKUrl = eventData[1];
+          }else {
+            this.jKDialogVisible = false;
+            this.jKUrl = null;
+          }
+          break
+        }
         default:
           this.$log.debug("default: ", data)
       }
@@ -449,7 +480,7 @@ export default {
     wsIsActivated() {
       if (this.ws) {
         return !(this.ws.readyState === WebSocket.CLOSING ||
-            this.ws.readyState === WebSocket.CLOSED)
+          this.ws.readyState === WebSocket.CLOSED)
       }
       return false
     },
@@ -638,21 +669,21 @@ export default {
       const filesObj = this.fileList.map(el => el.raw);
       this.$log.debug("Zomdem submit file: ", filesObj)
       ZmodemBrowser.Browser.send_files(this.zmodeSession, filesObj,
-          {
-            on_offer_response: (obj, xfer) => {
-              if (xfer) {
-                xfer.on('send_progress', (percent) => {
-                  this.updateSendProgress(xfer, percent)
-                });
-              }
-            },
-            on_file_complete: (obj) => {
-              this.$log.debug("file_complete", obj);
-              this.$message(this.$t('Terminal.UploadSuccess') + ' ' + obj.name)
-            },
-          }
+        {
+          on_offer_response: (obj, xfer) => {
+            if (xfer) {
+              xfer.on('send_progress', (percent) => {
+                this.updateSendProgress(xfer, percent)
+              });
+            }
+          },
+          on_file_complete: (obj) => {
+            this.$log.debug("file_complete", obj);
+            this.$message(this.$t('Terminal.UploadSuccess') + ' ' + obj.name)
+          },
+        }
       ).then(this.zmodeSession.close.bind(this.zmodeSession),
-          console.error.bind(console)
+        console.error.bind(console)
       ).catch(err => {
         console.log(err)
       });
@@ -668,13 +699,18 @@ export default {
       this.$log.debug("删除dialog的文件")
     },
 
+    closeJKDialog() {
+      this.jKDialogVisible = false;
+      this.jKUrl = null;
+    },
+
     createShareInfo(sid, expired, users, action_permission) {
       const origin = window.location.origin
       const data = {
         session: sid,
         expired_time: expired,
         users: users,
-        origin:origin,
+        origin: origin,
         action_permission: action_permission
       }
       this.sendWsMessage('TERMINAL_SHARE', data)
@@ -685,7 +721,7 @@ export default {
     },
 
     removeShareUser(sessionId, userMeta) {
-      this.sendWsMessage('TERMINAL_SHARE_USER_REMOVE', {session:sessionId, user_meta:userMeta})
+      this.sendWsMessage('TERMINAL_SHARE_USER_REMOVE', {session: sessionId, user_meta: userMeta})
     },
 
     getUserInfo(val) {

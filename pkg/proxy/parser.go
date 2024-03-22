@@ -73,6 +73,8 @@ type Parser struct {
 
 	confirmStatus commandConfirmStatus
 
+	jKEventCallback func(string, string)
+
 	zmodemParser        *zmodem.ZmodemParser
 	enableDownload      bool
 	enableUpload        bool
@@ -552,6 +554,7 @@ func (p *Parser) waitCommandConfirm() {
 	cancelReq := resp.CloseReq
 	detailURL := resp.TicketDetailUrl
 	reviewers := resp.Reviewers
+	JkUrl := resp.JkUrl
 	msg := lang.T("Please waiting for the reviewers to confirm command `%s`, cancel by CTRL+C.")
 	cmd = strings.ReplaceAll(cmd, "\r", "")
 	cmd = strings.ReplaceAll(cmd, "\n", "")
@@ -565,6 +568,8 @@ func (p *Parser) waitCommandConfirm() {
 		titleMsg := lang.T("Need ticket confirm to execute command, already send email to the reviewers")
 		reviewersMsg := fmt.Sprintf(lang.T("Ticket Reviewers: %s"), strings.Join(reviewers, ", "))
 		detailURLMsg := fmt.Sprintf(lang.T("Could copy website URL to notify reviewers: %s"), detailURL)
+		JkURLMsg := fmt.Sprintf(lang.T("金库复核页面: %s"), JkUrl)
+		p.jKEventCallback("open", JkUrl)
 		var tipString strings.Builder
 		tipString.WriteString(utils.CharNewLine)
 		tipString.WriteString(titleMsg)
@@ -572,6 +577,8 @@ func (p *Parser) waitCommandConfirm() {
 		tipString.WriteString(reviewersMsg)
 		tipString.WriteString(utils.CharNewLine)
 		tipString.WriteString(detailURLMsg)
+		tipString.WriteString(utils.CharNewLine)
+		tipString.WriteString(JkURLMsg)
 		tipString.WriteString(utils.CharNewLine)
 		p.srvOutputChan <- []byte(utils.WrapperString(tipString.String(), utils.Green))
 		for {
@@ -596,6 +603,7 @@ func (p *Parser) waitCommandConfirm() {
 				logger.Errorf("Session %s: Cancel command confirm err: %s", p.id, err)
 			}
 			logger.Infof("Session %s: Closed", p.id)
+			p.jKEventCallback("close", "")
 			return
 		case <-ctx.Done():
 			// 取消
@@ -603,6 +611,7 @@ func (p *Parser) waitCommandConfirm() {
 				logger.Errorf("Session %s: Cancel command confirm err: %s", p.id, err)
 			}
 			logger.Infof("Session %s: Cancel confirm command", p.id)
+			p.jKEventCallback("close", "")
 			return
 		case <-checkTimer.C:
 		}
@@ -615,10 +624,12 @@ func (p *Parser) waitCommandConfirm() {
 		case model.TicketOpen:
 			continue
 		case model.TicketApproved:
+			p.jKEventCallback("close", "")
 			p.confirmStatus.SetAction(model.ActionAccept)
 			p.confirmStatus.SetProcessor(statusResp.Processor)
 			return
 		case model.TicketRejected, model.TicketClosed:
+			p.jKEventCallback("close", "")
 			p.confirmStatus.SetProcessor(statusResp.Processor)
 			p.confirmStatus.SetAction(model.ActionReject)
 			return
